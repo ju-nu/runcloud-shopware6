@@ -307,8 +307,6 @@ composer require symfony/redis-messenger
     - **Directory:** `/home/runcloud/webapps/shopware`
     - **Autostart:** Aktivieren
     - **Autorestart:** Aktivieren
-    - **Startsecs:** 1
-    - **Stopwaitsecs:** 10
     - **Zusätzliche Einstellungen:**
       - **startsecs:** 1
       - **stopwaitsecs:** 10

@@ -267,6 +267,7 @@ composer require symfony/redis-messenger
 - **Wichtige Einstellungen in `.env.local`:**
 
   - **APP_URL:** Setzen Sie dies auf die URL Ihrer Shopware-Installation (z. B. `https://example.com`).
+  - **SHOPWARE_CACHE_ID:** Setzen Sie eine einmalige Cache ID mit: openssl rand -hex 16
   - **Redis- und Elasticsearch-Einstellungen:** Passen Sie diese entsprechend Ihrer Installation an.
 
 ### 13. Dienste erneut neu starten

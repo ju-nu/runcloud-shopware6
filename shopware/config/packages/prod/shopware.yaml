@@ -1,0 +1,7 @@
+# config/packages/prod/shopware.yaml
+shopware:
+    mail:
+        update_mail_variables_on_send: false
+    number_range:
+        increment_storage: "Redis"
+        redis_url: 'redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/%env(REDIS_DB_NUMBER_RANGE)%'

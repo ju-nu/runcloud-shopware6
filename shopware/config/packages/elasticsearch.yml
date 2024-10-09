@@ -1,0 +1,5 @@
+elasticsearch:
+    hosts: "%env(string:OPENSEARCH_URL)%"
+    index_settings:
+        number_of_shards: 1
+        number_of_replicas: 0

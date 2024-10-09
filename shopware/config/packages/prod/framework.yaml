@@ -1,0 +1,8 @@
+framework:
+    cache:
+        default_redis_provider: 'redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%'
+        pools:
+            cache.http:
+                adapter: cache.adapter.redis_tag_aware
+                provider: 'redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/%env(REDIS_DB_HTTP_CACHE)%'
+                tags: cache.tags

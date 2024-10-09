@@ -1,0 +1,24 @@
+# =========================================================
+# MySQL/MariaDB Configuration for Shopware 6
+# Author: JUNU Marketing Group LTD
+# Date: 11/09/2024
+# Description: Optimized configuration for MySQL/MariaDB tailored for
+#              Shopware 6 to ensure compatibility, performance, and stability.
+# =========================================================
+
+# Set the maximum length for GROUP_CONCAT results to ensure complex Shopware queries work correctly
+group_concat_max_len = 320000
+
+# Adjust SQL mode to remove ONLY_FULL_GROUP_BY for better compatibility with Shopware queries
+sql_mode = "ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES"
+
+[mariadbd]
+# Set the InnoDB buffer pool size to allocate sufficient memory for database caching
+# Adjust based on available server memory - optimal setting is around 70-80% of total RAM
+innodb_buffer_pool_size = 8G
+
+# =========================================================
+# © JUNU Marketing Group LTD - 2024. All rights reserved.
+# This configuration optimizes MySQL/MariaDB performance for Shopware 6, balancing
+# resource usage and query efficiency tailored for high-demand e-commerce environments.
+# =========================================================

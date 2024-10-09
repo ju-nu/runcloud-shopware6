@@ -1,0 +1,34 @@
+# =========================================================
+# Elasticsearch Configuration for Shopware 6
+# Author: JUNU Marketing Group LTD
+# Date: 11/09/2024
+# Description: Optimized configuration for Elasticsearch tailored for
+#              Shopware 6 to ensure compatibility, performance, and stability.
+# =========================================================
+
+# Path to store Elasticsearch data
+path.data: /var/lib/elasticsearch
+
+# Path to store Elasticsearch logs
+path.logs: /var/log/elasticsearch
+
+# Network settings
+network.host: 127.0.0.1
+http.port: 9200
+
+# Cluster and Node settings
+cluster.name: shopware-cluster
+node.name: shopware-node
+
+# Security settings
+# Disable xpack security features for environments where authentication and SSL are not needed
+# Enable and configure these settings if you plan to secure Elasticsearch with authentication and SSL
+xpack.security.enabled: false
+xpack.security.transport.ssl.enabled: false
+xpack.security.http.ssl.enabled: false
+
+# =========================================================
+# © JUNU Marketing Group LTD - 2024. All rights reserved.
+# This configuration optimizes Elasticsearch performance and security for Shopware 6,
+# ensuring a robust and scalable search infrastructure for high-demand e-commerce environments.
+# =========================================================

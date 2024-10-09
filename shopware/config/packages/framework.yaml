@@ -1,0 +1,6 @@
+framework:
+    cache:
+        app: cache.adapter.redis_tag_aware
+        default_redis_provider: 'redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/%env(REDIS_DB_APP_CACHE)%'
+    mailer:
+        message_bus: 'messenger.default_bus'

@@ -1,0 +1,12 @@
+shopware:
+    admin_worker:
+        enable_admin_worker: false
+    increment:
+        user_activity:
+          type: 'redis'
+          config:
+            url: 'redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/%env(REDIS_DB_STORAGE)%'
+        message_queue:
+          type: 'redis'
+          config:
+            url: 'redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/%env(REDIS_DB_STORAGE)%'

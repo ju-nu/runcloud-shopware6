@@ -1,0 +1,14 @@
+parameters:
+  env(MESSENGER_CONSUMER_NAME): 'consumer'
+
+framework:
+  messenger:
+    transports:
+      default:
+        dsn: "redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/messages/symfony/consumer-%env(MESSENGER_CONSUMER_NAME)%/?delete_after_ack=true&delete_after_reject=true&dbindex=%env(REDIS_DB_MESSENGER)%"
+      async:
+        dsn: "redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/messages?delete_after_ack=true&delete_after_reject=true&dbindex=%env(REDIS_DB_ASYNC)%"
+      failed:
+        dsn: "redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/failed?dbindex=%env(REDIS_DB_FAILED)%"
+      low_priority:
+        dsn: "redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/low_priority?dbindex=%env(REDIS_DB_LOW_PRIORITY)%"

@@ -234,7 +234,7 @@ sudo chmod 644 /etc/php/8.3/fpm/pool.d/username.conf
 - **Shopware mit Composer installieren:**
 
   ```bash
-  php /usr/bin/composer create-project shopware/production .
+  composer create-project shopware/production .
   ```
 
   **Hinweis:**
@@ -308,8 +308,8 @@ composer require symfony/redis-messenger
     - **Autostart:** Aktivieren
     - **Autorestart:** Aktivieren
     - **Zusätzliche Einstellungen:**
-      - **startsecs:** 1
-      - **stopwaitsecs:** 10
+      - startsecs=1
+      - stopwaitsecs=10
 
   - **Job 2: Shopware Default Worker**
 
@@ -386,7 +386,7 @@ composer require symfony/redis-messenger
   - Fügen Sie die Liste der zu deaktivierenden Funktionen hinzu, um die Sicherheit zu erhöhen.
 
     ```ini
-    getmyuid,passthru,leak,listen,diskfreespace,tmpfile,link,shell_exec,dl,exec,system,highlight_file,source,show_source,fpassthru,virtual,posix_ctermid,posix_getcwd,posix_getegid,posix_geteuid,posix_getgid,posix_getgrgid,posix_getgrnam,posix_getgroups,posix_getlogin,posix_getpgid,posix_getpgrp,posix_getpid,posix_getppid,posix_getpwuid,posix_getrlimit,posix_getsid,posix_getuid,posix_isatty,posix_kill,posix_mkfifo,posix_setegid,posix_seteuid,posix_setgid,posix_setpgid,posix_setsid,posix_setuid,posix_times,posix_ttyname,posix_uname,escapeshellcmd,ini_alter,popen,pcntl_exec,socket_accept,socket_bind,socket_clear_error,socket_close,socket_connect,symlink,ini_alter,socket_listen,socket_create_listen,socket_read,socket_create_pair,stream_socket_server
+    getmyuid,passthru,leak,listen,diskfreespace,tmpfile,link,shell_exec,dl,exec,system,highlight_file,source,show_source,fpassthru,virtual,posix_ctermid,posix_getcwd,posix_getegid,posix_geteuid,posix_getgid,posix_getgrgid,posix_getgrnam,posix_getgroups,posix_getlogin,posix_getpgid,posix_getpgrp,posix_getpid,posix_getppid,posix_getpwuid,posix_getrlimit,posix_getsid,posix_getuid,posix_isatty,posix_kill,posix_mkfifo,posix_setegid,posix_seteuid,posix_setgid,posix_setpgid,posix_setsid,posix_setuid,posix_times,posix_ttyname,posix_uname,escapeshellcmd,ini_alter,popen,pcntl_exec,socket_accept,socket_bind,socket_clear_error,socket_close,socket_connect,symlink,socket_listen,socket_create_listen,socket_read,socket_create_pair,stream_socket_server
     ```
 
 - **Weitere Einstellungen:**

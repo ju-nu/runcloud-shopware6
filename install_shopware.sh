@@ -14,7 +14,7 @@ export LC_ALL=C
 # ===============================
 
 PHP_VERSION="8.3"
-PHP_BIN="/usr/bin/php${PHP_VERSION}"
+PHP_BIN="/usr/bin/php"  # Removed the PHP version as per your request
 PHP_FPM_SERVICE="php${PHP_VERSION//./}rc-fpm"
 PHP_CONF_DIR="/etc/php-extra"  # Updated as per your request
 NGINX_CONF_DIR="/etc/nginx-rc/extra.d"
@@ -36,7 +36,7 @@ exec > >(while IFS= read -r line; do echo "$(date '+%Y-%m-%d %H:%M:%S') - $line"
 # Function to display usage information
 usage() {
     cat <<EOF
-Usage: $0 -u USERNAME -w WEBAPP -a APP_URL -m MYSQL_USER -p MYSQL_PASSWORD -d MYSQL_DATABASE [-s SHOPWARE_VERSION]
+Usage: $0 -u USERNAME -w WEBAPP -a APP_URL -m MYSQL_USER -p MYSQL_PASSWORD -d MYSQL_DATABASE -n SHOP_NAME -e SHOP_EMAIL -l SHOP_LOCALE -c SHOP_CURRENCY -U ADMIN_USERNAME -P ADMIN_PASSWORD -F ADMIN_FIRSTNAME -L ADMIN_LASTNAME -E ADMIN_EMAIL [-s SHOPWARE_VERSION]
 
 Options:
   -u USERNAME           System username under which Shopware will be installed.
@@ -45,11 +45,20 @@ Options:
   -m MYSQL_USER         MySQL username for the Shopware database.
   -p MYSQL_PASSWORD     Password for the MySQL user.
   -d MYSQL_DATABASE     Name of the MySQL database for Shopware.
-  -s SHOPWARE_VERSION   (Optional) Shopware version to install (default: 6.5.0).
+  -n SHOP_NAME          Name of the Shop.
+  -e SHOP_EMAIL         Email address of the Shop.
+  -l SHOP_LOCALE        Locale for the Shop (e.g., de-DE).
+  -c SHOP_CURRENCY      Currency for the Shop (e.g., EUR).
+  -U ADMIN_USERNAME     Admin username to create.
+  -P ADMIN_PASSWORD     Admin password.
+  -F ADMIN_FIRSTNAME    Admin first name.
+  -L ADMIN_LASTNAME     Admin last name.
+  -E ADMIN_EMAIL        Admin email address.
+  -s SHOPWARE_VERSION   (Optional) Shopware version to install (default: 6.6.7.0).
   -h                    Display this help message.
 
 Example:
-  $0 -u runcloud_user -w shopware_app -a https://shop.example.com -m shopware_user -p 'strongpassword123' -d shopware_db
+  $0 -u runcloud_user -w shopware_app -a https://shop.example.com -m shopware_user -p 'strongpassword123' -d shopware_db -n "Ihr Shopname" -e "shop@ihredomain.de" -l "de-DE" -c "EUR" -U "username" -P "djcrack12" -F "Hans" -L "Wurst" -E "hans@wurst.de"
 
 **Warning**: Passing the MySQL password via command-line arguments can be insecure. Ensure your system is secured or consider alternative methods.
 EOF
@@ -62,7 +71,7 @@ parse_args() {
     SHOPWARE_VERSION="6.6.7.0"
 
     # Parse options
-    while getopts "u:w:a:m:p:d:s:h" opt; do
+    while getopts "u:w:a:m:p:d:n:e:l:c:U:P:F:L:E:s:h" opt; do
         case $opt in
             u) USERNAME="$OPTARG" ;;
             w) WEBAPP="$OPTARG" ;;
@@ -70,6 +79,15 @@ parse_args() {
             m) MYSQL_USER="$OPTARG" ;;
             p) MYSQL_PASSWORD="$OPTARG" ;;
             d) MYSQL_DATABASE="$OPTARG" ;;
+            n) SHOP_NAME="$OPTARG" ;;
+            e) SHOP_EMAIL="$OPTARG" ;;
+            l) SHOP_LOCALE="$OPTARG" ;;
+            c) SHOP_CURRENCY="$OPTARG" ;;
+            U) ADMIN_USERNAME="$OPTARG" ;;
+            P) ADMIN_PASSWORD="$OPTARG" ;;
+            F) ADMIN_FIRSTNAME="$OPTARG" ;;
+            L) ADMIN_LASTNAME="$OPTARG" ;;
+            E) ADMIN_EMAIL="$OPTARG" ;;
             s) SHOPWARE_VERSION="$OPTARG" ;;
             h) usage ;;
             *) usage ;;
@@ -78,7 +96,10 @@ parse_args() {
 
     # Validate required arguments
     if [ -z "${USERNAME:-}" ] || [ -z "${WEBAPP:-}" ] || [ -z "${APP_URL:-}" ] || \
-       [ -z "${MYSQL_USER:-}" ] || [ -z "${MYSQL_PASSWORD:-}" ] || [ -z "${MYSQL_DATABASE:-}" ]; then
+       [ -z "${MYSQL_USER:-}" ] || [ -z "${MYSQL_PASSWORD:-}" ] || [ -z "${MYSQL_DATABASE:-}" ] || \
+       [ -z "${SHOP_NAME:-}" ] || [ -z "${SHOP_EMAIL:-}" ] || [ -z "${SHOP_LOCALE:-}" ] || \
+       [ -z "${SHOP_CURRENCY:-}" ] || [ -z "${ADMIN_USERNAME:-}" ] || [ -z "${ADMIN_PASSWORD:-}" ] || \
+       [ -z "${ADMIN_FIRSTNAME:-}" ] || [ -z "${ADMIN_LASTNAME:-}" ] || [ -z "${ADMIN_EMAIL:-}" ]; then
         echo "Error: Missing required arguments."
         usage
     fi
@@ -197,7 +218,7 @@ install_dependencies() {
 
     # Check PHP installation
     if ! command -v "$PHP_BIN" &>/dev/null; then
-        echo "Error: PHP $PHP_VERSION is not installed."
+        echo "Error: PHP is not installed."
         exit 1
     fi
 
@@ -505,10 +526,33 @@ install_shopware_cli() {
 
     sudo -u "$USERNAME" bash <<EOF
 cd ~/webapps/$WEBAPP/
-bin/console system:install --basic-setup --no-interaction
+bin/console system:install \\
+    --create-database \\
+    --shop-name="$SHOP_NAME" \\
+    --shop-email="$SHOP_EMAIL" \\
+    --shop-locale="$SHOP_LOCALE" \\
+    --shop-currency="$SHOP_CURRENCY" \\
+    --no-interaction
 EOF
 
     echo "Shopware CLI installation completed."
+}
+
+# Function to create admin user
+create_admin_user() {
+    echo "Creating admin user..."
+
+    sudo -u "$USERNAME" bash <<EOF
+cd ~/webapps/$WEBAPP/
+bin/console user:create --admin \\
+    --password "$ADMIN_PASSWORD" \\
+    --firstName "$ADMIN_FIRSTNAME" \\
+    --lastName "$ADMIN_LASTNAME" \\
+    --email "$ADMIN_EMAIL" \\
+    "$ADMIN_USERNAME"
+EOF
+
+    echo "Admin user created."
 }
 
 # Function to clear Shopware cache
@@ -540,6 +584,7 @@ final_setup() {
     create_env_local
     overwrite_shopware_configs
     install_shopware_cli
+    create_admin_user
     clear_shopware_cache
 
     echo "Shopware installation and configuration completed successfully."

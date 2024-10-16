@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# TODO: ES INDEXING AND ES ADMIN INDEXING
 # Exit immediately if a command exits with a non-zero status, and treat unset variables as an error.
 set -euo pipefail
 

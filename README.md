@@ -1,6 +1,6 @@
 # Shopware 6 Produktionsumgebung auf RunCloud
 
-Dieses Repository bietet Konfigurationsdateien und eine detaillierte Anleitung, um Shopware 6 in einer produktiven Umgebung auf RunCloud einzurichten. Die Konfiguration umfasst die Integration von Redis, Elasticsearch, optimierte PHP- und SQL-Einstellungen sowie die Einrichtung von Supervisor für die Verwaltung der Shopware-Worker.
+Dieses Repository bietet eine Anleitung zur Einrichtung von Shopware 6 in einer produktiven Umgebung auf RunCloud. Mithilfe eines automatisierten Skripts werden zahlreiche Konfigurationsschritte übernommen, einschließlich der Integration von Redis, Elasticsearch und optimierter PHP- und SQL-Einstellungen.
 
 ## Inhaltsverzeichnis
 
@@ -12,20 +12,13 @@ Dieses Repository bietet Konfigurationsdateien und eine detaillierte Anleitung, 
     - [2. PHP CLI auf Version 8.3 ändern](#2-php-cli-auf-version-83-ändern)
     - [3. Arbeitsverzeichnis auf `/public` setzen](#3-arbeitsverzeichnis-auf-public-setzen)
     - [4. SSL-Zertifikat hinzufügen](#4-ssl-zertifikat-hinzufügen)
-    - [5. MySQL- und PHP-Konfigurationen hinzufügen](#5-mysql--und-php-konfigurationen-hinzufügen)
-    - [6. Redis-Passwort deaktivieren](#6-redis-passwort-deaktivieren)
-    - [7. Dienste neu starten](#7-dienste-neu-starten)
-    - [8. Elasticsearch installieren und konfigurieren](#8-elasticsearch-installieren-und-konfigurieren)
-    - [9. Datenbank in RunCloud erstellen](#9-datenbank-in-runcloud-erstellen)
-    - [10. Shopware über die CLI installieren](#10-shopware-über-die-cli-installieren)
-    - [11. Redis Messenger für Shopware installieren](#11-redis-messenger-für-shopware-installieren)
-    - [12. Shopware-Konfigurationsdateien hinzufügen](#12-shopware-konfigurationsdateien-hinzufügen)
-    - [13. Dienste erneut neu starten](#13-dienste-erneut-neu-starten)
-    - [14. Supervisor-Einträge in RunCloud erstellen](#14-supervisor-einträge-in-runcloud-erstellen)
-  - [Optimierung der PHP- und SQL-Einstellungen](#optimierung-der-php--und-sql-einstellungen)
-    - [PHP-FPM-Konfiguration](#php-fpm-konfiguration)
-    - [PHP-Einstellungen](#php-einstellungen)
-  - [Supervisor-Konfiguration](#supervisor-konfiguration)
+    - [5. Redis-Passwort deaktivieren](#5-redis-passwort-deaktivieren)
+    - [6. Datenbank in RunCloud erstellen](#6-datenbank-in-runcloud-erstellen)
+    - [7. Skript ausführen](#7-skript-ausführen)
+    - [8. PHP-Einstellungen in RunCloud anpassen](#8-php-einstellungen-in-runcloud-anpassen)
+      - [PHP-FPM Einstellungen](#php-fpm-einstellungen)
+      - [PHP-Einstellungen](#php-einstellungen)
+    - [9. Supervisor-Einträge in RunCloud erstellen](#9-supervisor-einträge-in-runcloud-erstellen)
   - [Zusätzliche Hinweise](#zusätzliche-hinweise)
   - [Credits](#credits)
 
@@ -49,8 +42,8 @@ Dieses Repository bietet Konfigurationsdateien und eine detaillierte Anleitung, 
   - Klicken Sie auf **Create Web Application**.
   - Wählen Sie unter **Web Application Stack** die Option **Nginx Native** aus.
   - Füllen Sie die folgenden Felder aus:
-    - **Domain Name:** Geben Sie den Domainnamen ein (z. B. `example.com`).
-    - **Web Application Name:** Geben Sie einen Namen für die Anwendung ein (z. B. `shopware`).
+    - **Domain Name:** Geben Sie den Domainnamen ein (z. B. `example.com`).
+    - **Web Application Name:** Geben Sie einen Namen für die Anwendung ein (z. B. `shopware`).
   - Klicken Sie auf **Add Web Application**, um die Web-App zu erstellen.
 
 ### 2. PHP CLI auf Version 8.3 ändern
@@ -95,38 +88,7 @@ Dieses Repository bietet Konfigurationsdateien und eine detaillierte Anleitung, 
 
 - Ein SSL-Zertifikat ermöglicht die verschlüsselte Kommunikation zwischen dem Server und dem Client, was für die Sicherheit Ihrer Shopware-Installation unerlässlich ist.
 
-### 5. MySQL- und PHP-Konfigurationen hinzufügen
-
-- Verbinden Sie sich per SSH mit Ihrem Server.
-
-**Für die MySQL-Konfiguration:**
-
-- Kopieren Sie die bereitgestellte MySQL-Konfigurationsdatei [shopware.cnf](https://github.com/ju-nu/runcloud-shopware6/blob/main/root/etc/mysql/conf.d/shopware.cnf) in das Verzeichnis `/etc/mysql/conf.d/`.
-- Benennen Sie die Datei um, sodass sie dem Benutzernamen Ihrer Web-Applikation entspricht (z. B. `username.cnf`).
-
-```bash
-sudo cp shopware.cnf /etc/mysql/conf.d/username.cnf
-sudo chown root:root /etc/mysql/conf.d/username.cnf
-sudo chmod 644 /etc/mysql/conf.d/username.cnf
-```
-
-**Für die PHP-Konfiguration:**
-
-- Kopieren Sie die bereitgestellte PHP-Konfigurationsdatei [shopware.conf](https://github.com/ju-nu/runcloud-shopware6/blob/main/root/etc/php-extra/shopware.conf) in das Verzeichnis `/etc/php/8.3/fpm/pool.d/`.
-
-```bash
-sudo cp shopware.conf /etc/php/8.3/fpm/pool.d/username.conf
-sudo chown root:root /etc/php/8.3/fpm/pool.d/username.conf
-sudo chmod 644 /etc/php/8.3/fpm/pool.d/username.conf
-```
-
-- Ersetzen Sie `username` durch den tatsächlichen Benutzernamen Ihrer Web-Applikation.
-
-**Hinweis:**
-
-- Kopieren Sie die Werte aus dem Abschnitt [Optimierung der PHP- und SQL-Einstellungen](#optimierung-der-php--und-sql-einstellungen) in die PHP-Einstellungen Ihrer Web-Applikation in RunCloud.
-
-### 6. Redis-Passwort deaktivieren
+### 5. Redis-Passwort deaktivieren
 
 - **Im RunCloud-Dashboard:**
   - Gehen Sie zu **Services** im linken Menü.
@@ -139,65 +101,7 @@ sudo chmod 644 /etc/php/8.3/fpm/pool.d/username.conf
 
 - Da Redis lokal auf dem Server läuft und nicht von außen erreichbar ist, ist es sicher, das Passwort zu deaktivieren. Dies erleichtert die Konfiguration mit Shopware.
 
-### 7. Dienste neu starten
-
-- **Im RunCloud-Dashboard:**
-  - Gehen Sie zu **Services**.
-  - Starten Sie die folgenden Dienste neu:
-    - **MySQL**: Klicken Sie auf **Restart** neben MySQL.
-    - **Redis**: Klicken Sie auf **Restart** neben Redis.
-
-- **Per SSH:**
-  - Starten Sie PHP-FPM neu:
-
-    ```bash
-    sudo systemctl restart php8.3-fpm
-    ```
-
-**Warum Dienste neu starten?**
-
-- Damit die neuen Konfigurationen übernommen werden, müssen die entsprechenden Dienste neu gestartet werden.
-
-### 8. Elasticsearch installieren und konfigurieren
-
-**Per SSH:**
-
-- **Elasticsearch herunterladen und installieren:**
-
-  ```bash
-  cd /tmp
-  wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.15.1-amd64.deb
-  sudo dpkg -i elasticsearch-8.15.1-amd64.deb
-  sudo apt-get install -f
-  ```
-
-- **Elasticsearch beim Systemstart aktivieren und starten:**
-
-  ```bash
-  sudo systemctl enable elasticsearch
-  sudo systemctl start elasticsearch
-  sudo systemctl status elasticsearch
-  ```
-
-- **Elasticsearch konfigurieren:**
-
-  - Ersetzen Sie die Datei `/etc/elasticsearch/elasticsearch.yml` mit der [elasticsearch.yml](https://github.com/ju-nu/runcloud-shopware6/blob/main/root/etc/elasticsearch/elasticsearch.yml).
-
-    ```bash
-    sudo nano /etc/elasticsearch/elasticsearch.yml
-    ```
-
-- **Elasticsearch neu starten:**
-
-  ```bash
-  sudo systemctl restart elasticsearch
-  ```
-
-**Warum Elasticsearch?**
-
-- Elasticsearch wird von Shopware für die Produkt- und Kategoriesuche sowie für verschiedene Indexierungsprozesse verwendet.
-
-### 9. Datenbank in RunCloud erstellen
+### 6. Datenbank in RunCloud erstellen
 
 - **Im RunCloud-Dashboard:**
   - Gehen Sie zu **Database** im linken Menü.
@@ -215,153 +119,55 @@ sudo chmod 644 /etc/php/8.3/fpm/pool.d/username.conf
 
 - `utf8mb4_unicode_ci` unterstützt vollständige UTF-8-Zeichen, einschließlich Emojis, und ist für Shopware erforderlich.
 
-### 10. Shopware über die CLI installieren
+### 7. Skript ausführen
+
+Das Skript automatisiert viele der erforderlichen Installations- und Konfigurationsschritte für Shopware 6. Folgen Sie den nachstehenden Anweisungen, um das Skript auszuführen.
 
 **Per SSH:**
 
-- **Zum Web-App-Verzeichnis navigieren:**
+- **Skript herunterladen:**
 
   ```bash
-  cd ~/webapps/shopware/
+  wget -O install_shopware.sh https://github.com/ju-nu/runcloud-shopware6/raw/main/install_shopware.sh
+  chmod +x install_shopware.sh
   ```
 
-- **Vorhandene Dateien entfernen:**
+  *Ersetzen Sie `https://github.com/ju-nu/runcloud-shopware6/raw/main/install_shopware.sh` durch die tatsächliche URL des Skripts, falls abweichend.*
+
+- **Skript ausführen:**
 
   ```bash
-  rm -rf * .*
+  ./install_shopware.sh -u USERNAME -w WEBAPP -a APP_URL -m MYSQL_USER -p 'MYSQL_PASSWORD' -d MYSQL_DATABASE
   ```
 
-- **Shopware mit Composer installieren:**
+  **Parameterbeschreibung:**
+
+  - `-u USERNAME`: Systembenutzername, unter dem Shopware installiert wird (z. B. `runcloud`).
+  - `-w WEBAPP`: Name der Web-App oder des Verzeichnisses (z. B. `shopware`).
+  - `-a APP_URL`: URL, unter der Ihre Shopware-Anwendung erreichbar ist (z. B. `https://example.com`).
+  - `-m MYSQL_USER`: MySQL-Benutzername für die Shopware-Datenbank.
+  - `-p 'MYSQL_PASSWORD'`: Passwort für den MySQL-Benutzer (in einfachen Anführungszeichen, wenn es Sonderzeichen enthält).
+  - `-d MYSQL_DATABASE`: Name der MySQL-Datenbank für Shopware.
+
+  **Beispiel:**
 
   ```bash
-  composer create-project shopware/production .
+  ./install_shopware.sh -u runcloud -w shopware -a https://example.com -m shopware_user -p 'starkesPasswort123' -d shopware_db
   ```
 
-  **Hinweis:**
+**Hinweis zur Sicherheit:**
 
-  - Wenn Composer nicht unter `/usr/bin/composer` verfügbar ist, verwenden Sie den Befehl `which composer`, um den richtigen Pfad zu finden.
+- Beachten Sie, dass das Übergeben des MySQL-Passworts als Befehlszeilenargument potenzielle Sicherheitsrisiken birgt, da es möglicherweise in Prozesslisten sichtbar ist. Stellen Sie sicher, dass Ihr System entsprechend gesichert ist.
 
-- **Installationsprozess folgen:**
+### 8. PHP-Einstellungen in RunCloud anpassen
 
-  - Während der Installation werden Sie möglicherweise nach Datenbankdetails und anderen Konfigurationen gefragt. Verwenden Sie die zuvor erstellten Datenbankinformationen.
+Obwohl das Skript viele Konfigurationsschritte automatisiert, müssen einige PHP-Einstellungen manuell in RunCloud angepasst werden, um die optimale Leistung und Sicherheit Ihrer Shopware-Installation zu gewährleisten.
 
-### 11. Redis Messenger für Shopware installieren
-
-**Per SSH im Web-App-Verzeichnis:**
-
-```bash
-composer require symfony/redis-messenger
-```
-
-**Warum?**
-
-- Der Redis Messenger ermöglicht es Shopware, Redis für das Messaging und die Verarbeitung von Hintergrundaufgaben zu nutzen.
-
-### 12. Shopware-Konfigurationsdateien hinzufügen
-
-- **Konfigurationsdateien kopieren:**
-
-  - Kopieren Sie die bereitgestellten [Konfigurationsdateien](https://github.com/ju-nu/runcloud-shopware6/blob/main/shopware) aus diesem Repository in Ihre Shopware-Installation.
-  - Stellen Sie sicher, dass die Datei `.env.local` korrekt konfiguriert ist.
-
-- **Wichtige Einstellungen in `.env.local`:**
-
-  - **APP_URL:** Setzen Sie dies auf die URL Ihrer Shopware-Installation (z. B. `https://example.com`).
-  - **SHOPWARE_CACHE_ID:** Setzen Sie eine einmalige Cache ID mit: openssl rand -hex 16
-  - **Redis- und Elasticsearch-Einstellungen:** Passen Sie diese entsprechend Ihrer Installation an.
-
-### 13. Dienste erneut neu starten
-
-- **Per SSH:**
-
-  ```bash
-  sudo systemctl restart redis
-  sudo systemctl restart elasticsearch
-  sudo systemctl restart php8.3-fpm
-  ```
-
-**Warum erneut neu starten?**
-
-- Nach der Installation und Konfiguration von Shopware und seinen Komponenten ist es wichtig, die Dienste neu zu starten, um sicherzustellen, dass alle Änderungen übernommen werden.
-
-### 14. Supervisor-Einträge in RunCloud erstellen
-
-**Hinweis:** In RunCloud können Sie Supervisor direkt über das Dashboard konfigurieren.
+#### PHP-FPM Einstellungen
 
 - **Im RunCloud-Dashboard:**
-  - Gehen Sie zu **Process Manager** im linken Menü.
-  - Wählen Sie **Supervisor** aus.
-  - Klicken Sie auf **Create New Supervisor Job**.
-
-- **Supervisor-Jobs erstellen:**
-
-  - **Job 1: Shopware Async Worker**
-
-    - **Name:** `shopware_async`
-    - **Command:**
-
-      ```bash
-      /RunCloud/Packages/php83rc/bin/php /home/runcloud/webapps/shopware/bin/console messenger:consume async low_priority scheduler_shopware --time-limit=600 --memory-limit=1024M --sleep=1
-      ```
-
-    - **Directory:** `/home/runcloud/webapps/shopware`
-    - **Autostart:** Aktivieren
-    - **Autorestart:** Aktivieren
-    - **Zusätzliche Einstellungen:**
-      - startsecs=1
-      - stopwaitsecs=10
-
-  - **Job 2: Shopware Default Worker**
-
-    - **Name:** `shopware_default`
-    - **Command:**
-
-      ```bash
-      /RunCloud/Packages/php83rc/bin/php /home/runcloud/webapps/shopware/bin/console messenger:consume default --time-limit=600 --memory-limit=1024M --sleep=1
-      ```
-
-    - **Directory:** `/home/runcloud/webapps/shopware`
-    - **Weitere Einstellungen wie oben**
-
-  - **Job 3: Shopware Failed Worker**
-
-    - **Name:** `shopware_failed`
-    - **Command:**
-
-      ```bash
-      /RunCloud/Packages/php83rc/bin/php /home/runcloud/webapps/shopware/bin/console messenger:consume failed --time-limit=600 --memory-limit=1024M --sleep=1
-      ```
-
-    - **Directory:** `/home/runcloud/webapps/shopware`
-    - **Weitere Einstellungen wie oben**
-
-  - **Job 4: Shopware Scheduled Task**
-
-    - **Name:** `shopware_scheduled_task`
-    - **Command:**
-
-      ```bash
-      /RunCloud/Packages/php83rc/bin/php /home/runcloud/webapps/shopware/bin/console scheduled-task:run --time-limit=600 --memory-limit=512M
-      ```
-
-    - **Directory:** `/home/runcloud/webapps/shopware`
-    - **Weitere Einstellungen wie oben**
-
-- **Supervisor neu starten:**
-
-  - Nach dem Hinzufügen aller Jobs klicken Sie auf **Restart Supervisor**, um die Änderungen zu übernehmen.
-
-**Warum Supervisor?**
-
-- Supervisor stellt sicher, dass die Hintergrundprozesse von Shopware kontinuierlich laufen und bei Bedarf automatisch neu gestartet werden.
-
-## Optimierung der PHP- und SQL-Einstellungen
-
-### PHP-FPM-Konfiguration
-
-- **Im RunCloud-Dashboard:**
-  - Gehen Sie zu **Web Applications** und wählen Sie Ihre Shopware-Web-App aus.
-  - Navigieren Sie zu **Settings** > **PHP-FPM Settings**.
+  - Navigieren Sie zu **Web Applications** und wählen Sie Ihre Shopware-Web-App aus.
+  - Gehen Sie zu **Settings** > **PHP-FPM Settings**.
 
 - **Einstellungen anpassen:**
 
@@ -376,7 +182,7 @@ composer require symfony/redis-messenger
     pm.max_requests = 500
     ```
 
-### PHP-Einstellungen
+#### PHP-Einstellungen
 
 - **Im RunCloud-Dashboard:**
   - Unter **PHP Settings** können Sie die folgenden Einstellungen anpassen.
@@ -405,17 +211,76 @@ composer require symfony/redis-messenger
 
 - Die Anpassung dieser Einstellungen optimiert die PHP-Leistung für Shopware und stellt sicher, dass größere Anfragen und Dateien verarbeitet werden können.
 
-## Supervisor-Konfiguration
+### 9. Supervisor-Einträge in RunCloud erstellen
 
-- **Arbeitsverzeichnis:** `/home/runcloud/webapps/shopware`
-- **Zusätzliche Einstellungen:**
+**Hinweis:** In RunCloud können Sie Supervisor direkt über das Dashboard konfigurieren.
 
-  - **startsecs:** 1
-  - **stopwaitsecs:** 10
+- **Im RunCloud-Dashboard:**
+  - Gehen Sie zu **Process Manager** im linken Menü.
+  - Wählen Sie **Supervisor** aus.
+  - Klicken Sie auf **Create New Supervisor Job**.
 
-- **Hinweis:**
+- **Supervisor-Jobs erstellen:**
 
-  - Supervisor sorgt dafür, dass die Shopware-Worker kontinuierlich laufen. Die Einstellungen `startsecs` und `stopwaitsecs` kontrollieren das Start- und Stop-Verhalten der Prozesse.
+  - **Job 1: Shopware Async Worker**
+
+    - **Name:** `shopware_async`
+    - **Command:**
+
+      ```bash
+      /RunCloud/Packages/php83rc/bin/php /home/USERNAME/webapps/WEBAPP/bin/console messenger:consume async low_priority scheduler_shopware --time-limit=600 --memory-limit=1024M --sleep=1
+      ```
+
+    - **Directory:** `/home/USERNAME/webapps/WEBAPP`
+    - **Autostart:** Aktivieren
+    - **Autorestart:** Aktivieren
+    - **Zusätzliche Einstellungen:**
+      - `startsecs=1`
+      - `stopwaitsecs=10`
+
+  - **Job 2: Shopware Default Worker**
+
+    - **Name:** `shopware_default`
+    - **Command:**
+
+      ```bash
+      /RunCloud/Packages/php83rc/bin/php /home/USERNAME/webapps/WEBAPP/bin/console messenger:consume default --time-limit=600 --memory-limit=1024M --sleep=1
+      ```
+
+    - **Directory:** `/home/USERNAME/webapps/WEBAPP`
+    - **Weitere Einstellungen wie oben**
+
+  - **Job 3: Shopware Failed Worker**
+
+    - **Name:** `shopware_failed`
+    - **Command:**
+
+      ```bash
+      /RunCloud/Packages/php83rc/bin/php /home/USERNAME/webapps/WEBAPP/bin/console messenger:consume failed --time-limit=600 --memory-limit=1024M --sleep=1
+      ```
+
+    - **Directory:** `/home/USERNAME/webapps/WEBAPP`
+    - **Weitere Einstellungen wie oben**
+
+  - **Job 4: Shopware Scheduled Task**
+
+    - **Name:** `shopware_scheduled_task`
+    - **Command:**
+
+      ```bash
+      /RunCloud/Packages/php83rc/bin/php /home/USERNAME/webapps/WEBAPP/bin/console scheduled-task:run --time-limit=600 --memory-limit=512M
+      ```
+
+    - **Directory:** `/home/USERNAME/webapps/WEBAPP`
+    - **Weitere Einstellungen wie oben**
+
+- **Supervisor neu starten:**
+
+  - Nach dem Hinzufügen aller Jobs klicken Sie auf **Restart Supervisor**, um die Änderungen zu übernehmen.
+
+**Warum Supervisor?**
+
+- Supervisor stellt sicher, dass die Hintergrundprozesse von Shopware kontinuierlich laufen und bei Bedarf automatisch neu gestartet werden.
 
 ## Zusätzliche Hinweise
 
@@ -424,7 +289,7 @@ composer require symfony/redis-messenger
   - Halten Sie Ihr System und alle Komponenten regelmäßig auf dem neuesten Stand.
 
 - **Fehlerbehebung:**
-  - Überprüfen Sie die Log-Dateien (z. B. `/var/log/nginx/`, `/var/log/php8.3-fpm.log`), wenn Probleme auftreten.
+  - Überprüfen Sie die Log-Dateien (z. B. `/var/log/nginx/`, `/var/log/php8.3-fpm.log`), wenn Probleme auftreten.
   - Stellen Sie sicher, dass alle Dienste laufen und korrekt konfiguriert sind.
 
 - **Leistung:**

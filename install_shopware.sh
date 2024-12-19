@@ -68,7 +68,7 @@ EOF
 # Function to parse command-line arguments
 parse_args() {
     # Default Shopware version
-    SHOPWARE_VERSION="6.6.7.0"
+    SHOPWARE_VERSION="6.6.9.0"
 
     # Parse options
     while getopts "u:w:a:m:p:d:n:e:l:c:U:P:F:L:E:s:h" opt; do

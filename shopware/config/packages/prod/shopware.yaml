@@ -1,7 +1,12 @@
 # config/packages/prod/shopware.yaml
 shopware:
+    redis:
+        connections:
+            persistent:
+                dsn: 'redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/%env(REDIS_DB_NUMBER_RANGE)%'
+    number_range:
+        increment_storage: 'redis'
+        config:
+            connection: 'persistent'
     mail:
         update_mail_variables_on_send: false
-    number_range:
-        increment_storage: "Redis"
-        redis_url: 'redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/%env(REDIS_DB_NUMBER_RANGE)%'

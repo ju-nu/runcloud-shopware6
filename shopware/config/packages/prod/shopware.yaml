@@ -1,5 +1,7 @@
 # config/packages/prod/shopware.yaml
 shopware:
+    product_stream:
+        indexing: false
     redis:
         connections:
             persistent:

@@ -11,7 +11,7 @@ group_concat_max_len = 320000
 
 # Adjust SQL mode to remove ONLY_FULL_GROUP_BY for better compatibility with Shopware queries
 sql_mode = "ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES"
-
+log_bin_trust_function_creators = 1
 [mariadbd]
 # Set the InnoDB buffer pool size to allocate sufficient memory for database caching
 # Adjust based on available server memory - optimal setting is around 70-80% of total RAM

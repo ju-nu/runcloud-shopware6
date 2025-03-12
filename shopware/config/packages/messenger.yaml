@@ -5,10 +5,11 @@ framework:
   messenger:
     transports:
       default:
-        dsn: "redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/messages/symfony/consumer-%env(MESSENGER_CONSUMER_NAME)%/?delete_after_ack=true&delete_after_reject=true&dbindex=%env(REDIS_DB_MESSENGER)%"
+        dsn: "redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/%env(REDIS_DB_MESSENGER)%/messages/symfony/consumer-%env(MESSENGER_CONSUMER_NAME)%?delete_after_ack=true&delete_after_reject=true"
       async:
-        dsn: "redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/messages?delete_after_ack=true&delete_after_reject=true&dbindex=%env(REDIS_DB_ASYNC)%"
+        dsn: "redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/%env(REDIS_DB_ASYNC)%/messages?delete_after_ack=true&delete_after_reject=true"
       failed:
-        dsn: "redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/failed?dbindex=%env(REDIS_DB_FAILED)%"
+        dsn: "redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/%env(REDIS_DB_FAILED)%/failed"
       low_priority:
-        dsn: "redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/low_priority?dbindex=%env(REDIS_DB_LOW_PRIORITY)%"
+        dsn: "redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%/%env(REDIS_DB_LOW_PRIORITY)%/low_priority"
+
